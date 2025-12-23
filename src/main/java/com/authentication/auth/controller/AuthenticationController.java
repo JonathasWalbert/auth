@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.authentication.auth.domain.user.AuthenticationService;
 import com.authentication.auth.domain.user.DataAuthentication;
+import com.authentication.auth.domain.user.DataRegister;
 import com.authentication.auth.domain.user.User;
 import com.authentication.auth.infra.security.DataTokenJwt;
 import com.authentication.auth.infra.security.TokenService;
@@ -18,7 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/authentication")
 public class AuthenticationController {
 
     @Autowired
@@ -27,8 +29,11 @@ public class AuthenticationController {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private AuthenticationService service;
 
-    @PostMapping()
+
+    @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid DataAuthentication data) {
         try{
             var authenticationToken = new UsernamePasswordAuthenticationToken(data.email(), data.password());
@@ -43,4 +48,15 @@ public class AuthenticationController {
         }
     }
 
+    @PostMapping("register")
+    public ResponseEntity register(@RequestBody @Valid DataRegister data) {
+        try{
+            service.register(data);
+            return ResponseEntity.ok().build();
+        }catch(Exception e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    
 }
