@@ -27,14 +27,14 @@ public class AuthenticationService implements UserDetailsService {
         return user;
     }
 
-    public void register(DataRegister data) {
+    public User register(DataRegister data) {
         var existing = repository.findByEmail(data.email());
         if (existing != null) {
             throw new ValidationException("Email já cadastrado");
         }
 
         var user = new User(null, data.name(), data.lastname(), data.email(), passwordEncoder.encode(data.password()));
-        repository.save(user);
+        return repository.save(user);
     }
 
 }

@@ -1,5 +1,7 @@
 package com.authentication.auth.controller;
 
+import java.net.URI;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -51,8 +53,9 @@ public class AuthenticationController {
     @PostMapping("register")
     public ResponseEntity register(@RequestBody @Valid DataRegister data) {
         try{
-            service.register(data);
-            return ResponseEntity.ok().build();
+            User user = service.register(data);
+            var location = URI.create("/users/" + user.getId());
+            return ResponseEntity.created(location).build();
         }catch(Exception e){
             e.printStackTrace();
             return ResponseEntity.badRequest().body(e.getMessage());
